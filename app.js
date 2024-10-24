@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const app = express();
+const port = 8080;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -14,6 +15,8 @@ app.get('/', (req, res) => {
 // Handle form submission and call Numbers API
 app.post('/get-number-fact', async (req, res) => {
   const number = req.body.number;
+
+  console.log('Received number:', number);  // Add this to log the number
 
   if (!number) {
     return res.status(400).send("Please provide a valid number.");
@@ -32,8 +35,11 @@ app.post('/get-number-fact', async (req, res) => {
   }
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Start the server
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+} else {
+  module.exports = app; // Export app for testing
+}
